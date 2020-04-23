@@ -1,0 +1,1 @@
+// This is a good resource for badge generation: https://shields.io/
