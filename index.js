@@ -8,13 +8,27 @@ inquirer
       message: "What is your GitHub user name?",
       name: "username"
     },
-    // {
-    //   type: "confirm",
-    //   message: "Do you have a graphic you'd like to upload for your badge?",
-    //   name: "customBadge",
-    //   default: false
-    //   // use WHEN (research documentation) to set up a conditional to determine if a custom or stock badge should be used for README
-    // },
+    {
+      type: "confirm",
+      message: "Do you have a custom graphic you'd like to upload for your badge?",
+      name: "customBadge",
+      default: false
+      // use WHEN (research documentation) to set up a conditional to determine if a custom or stock badge should be used for README
+    },
+    {
+      type: "input",
+      message: "Excellent! Please provide the URL to your custom badge image.",
+      name: "customBadgeURL",
+      when: (answers) => {
+        return answers.customBadge;
+      },
+    },
+    {
+      type: "input",
+      message: "Then please provide a link to a standard badge you'd like to use.",
+      name: "badgeLink",
+      when: (answers) => answers.customBadge === false
+    },
     {
       type: "input",
       message: "What is the title of your project?",
@@ -72,6 +86,8 @@ inquirer
       name: "email",
       default: false
     }
-  ]);
+  ]).then(answers => {
+    console.log(answers);
+  });
 
 // This is a good resource for badge generation: https://shields.io/
