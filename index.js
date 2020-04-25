@@ -44,13 +44,18 @@ inquirer
     },
     {
       type: "confirm",
-      name: "tableOfContents",
-      message: "Does your project require a table of contents?"
+      name: "tableOfContentsConfirm",
+      message: "Does your project require a table of contents?",
+      default: false
     },
-    // if(tableOfContents):
+    // if(tableOfContentsConfirm):
       {
         type: "input",
-        name: ""
+        name: "tableOfContents",
+        message: "Excellent! Please list what should be in your table of contents.",
+        when: answers => {
+          return answers.tableOfContentsConfirm;
+        }
       },
     {
       type: "input",
@@ -63,10 +68,20 @@ inquirer
       message: "Please provide usage details."
     },
     {
-      type: "input",
-      name: "licenses",
-      message: "What licenses are associated with your project?"
+      type: "confirm",
+      name: "licenseConfirm",
+      message: "Does your project have any licenses associated with it?",
+      default: false
     },
+    // if(licenseConfirm): 
+      {
+        type: "input",
+        name: "licenses",
+        message: "Please list all licenses.",
+        when: answers => {
+          return answers.licenseConfirm;
+        }
+      },
     {
       type: "input",
       name: "contributors",
