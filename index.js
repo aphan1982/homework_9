@@ -52,7 +52,7 @@ inquirer
       {
         type: "input",
         name: "tableOfContents",
-        message: "Excellent! Please list what should be in your table of contents.",
+        message: "Please list what your table of contents should display.",
         when: answers => {
           return answers.tableOfContentsConfirm;
         }
@@ -60,12 +60,12 @@ inquirer
     {
       type: "input",
       name: "installation",
-      message: "Please describe the installation method."
+      message: "Please describe your project's installation method."
     },
     {
       type: "input",
       name: "usage",
-      message: "Please provide usage details."
+      message: "Please provide your project's usage details."
     },
     {
       type: "confirm",
@@ -77,7 +77,7 @@ inquirer
       {
         type: "input",
         name: "licenses",
-        message: "Please list all licenses.",
+        message: "Please list all licenses for your project.",
         when: answers => {
           return answers.licenseConfirm;
         }
@@ -88,10 +88,20 @@ inquirer
       message: "Please list all contributors to your project."
     },
     {
-      type: "input",
-      name: "tests",
-      message: "What tests are associated with this project?"
+     type: "confirm",
+     name: "testsConfirm",
+     message: "Does your project have any tests associated with it?",
+     default: false
     },
+    // if(testsConfirm):
+      {
+        type: "input",
+        name: "tests",
+        message: "Please list all your project tests.",
+        when: answers => {
+          return answers.testsConfirm;
+        }
+      },
     {
       type: "input",
       name: "freqAskedQuestions",
@@ -99,13 +109,13 @@ inquirer
     },
     {
       type: "confirm",
-      name: "profilePic",
+      name: "profilePicConfirm",
       message: "Would you like to include your GitHub profile picture?",
       default: false
     },
     {
       type: "confirm",
-      name: "email",
+      name: "emailConfirm",
       message: "Would you like to include your GitHub e-mail address?",
       default: false
     }
