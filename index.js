@@ -128,13 +128,23 @@ const promptUser = () => {
 
 const writeMD = (answers) => {
   return `# ${answers.projectName}
+  
+  ## Description:
+  ${answers.description}
+  
+  ## Table of Contents:
+  ${answers.tableOfContents}
   `
 }
 
 promptUser()
-  .then(answers => {
-      const markdown = writeMD(answers);
+.then(answers => {
+  const markdown = writeMD(answers);
   
-      return writeFileAsync("README_result.md", markdown);
-    });
+  return writeFileAsync("README_result.md", markdown);
+}).then(() => {
+  console.log("You have successfully created your README!");
+}).catch(err => {
+  console.log(err);
+});
 // This is a good resource for badge generation: https://shields.io/
