@@ -3,8 +3,10 @@ const inquirer = require("inquirer");
 const util = require("util");
 // I will need to read up on the documentation of Util.js: https://nodejs.org/api/util.html.
 
-inquirer
-  .prompt([
+const writeFileAsync = util.promisify(fs.writeFile);
+
+const promptUser = () => {
+  return inquirer.prompt([
     { 
       type: "input",
       name: "username",
@@ -90,10 +92,10 @@ inquirer
       message: "Please list all contributors to your project."
     },
     {
-     type: "confirm",
-     name: "testsConfirm",
-     message: "Does your project have any tests associated with it?",
-     default: false
+    type: "confirm",
+    name: "testsConfirm",
+    message: "Does your project have any tests associated with it?",
+    default: false
     },
     // if(testsConfirm):
       {
@@ -121,8 +123,18 @@ inquirer
       message: "Would you like to include your GitHub e-mail address?",
       default: false
     }
-  ]).then(answers => {
-    console.log(answers);
-  });
+  ]);
+}
 
+const writeMD = (answers) => {
+  return `# ${answers.projectName}
+  `
+}
+
+promptUser()
+  .then(answers => {
+      const markdown = writeMD(answers);
+  
+      return writeFileAsync("README_result.md", markdown);
+    });
 // This is a good resource for badge generation: https://shields.io/
