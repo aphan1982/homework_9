@@ -10,25 +10,28 @@ inquirer
     },
     {
       type: "confirm",
-      name: "customBadge",
+      name: "badgeConfirm",
       message: "Do you have a custom graphic you'd like to upload for your badge?",
       default: false
-      // use WHEN (research documentation) to set up a conditional to determine if a custom or stock badge should be used for README
     },
-    {
-      type: "input",
-      name: "customBadgeURL",
-      message: "Excellent! Please provide the URL to your custom badge image.",
-      when: (answers) => {
-        return answers.customBadge;
+    // if(badgeConfirm):
+      {
+        type: "input",
+        name: "customBadgeURL",
+        message: "Excellent! Please provide the URL to your custom badge image.",
+        when: answers => {
+          return answers.badgeConfirm;
+        },
       },
-    },
-    {
-      type: "input",
-      name: "badgeLink",
-      message: "Then please provide a link to a standard badge you'd like to use.",
-      when: (answers) => answers.customBadge === false
-    },
+      // else:
+      {
+        type: "input",
+        name: "standardBadgeURL",
+        message: "Then please provide a link to a standard badge you'd like to use.",
+        when: answers => {
+          return !answers.badgeConfirm;
+        }
+      },
     {
       type: "input",
       name: "projectName",
@@ -40,10 +43,15 @@ inquirer
       message: "Please give a brief description of your project."
     },
     {
-      type: "input",
+      type: "confirm",
       name: "tableOfContents",
-      message: "Please provide a table of contents."
+      message: "Does your project require a table of contents?"
     },
+    // if(tableOfContents):
+      {
+        type: "input",
+        name: ""
+      },
     {
       type: "input",
       name: "installation",
