@@ -5,85 +5,85 @@ inquirer
   .prompt([
     { 
       type: "input",
-      message: "What is your GitHub user name?",
-      name: "username"
+      name: "username",
+      message: "What is your GitHub user name?"
     },
     {
       type: "confirm",
-      message: "Do you have a custom graphic you'd like to upload for your badge?",
       name: "customBadge",
+      message: "Do you have a custom graphic you'd like to upload for your badge?",
       default: false
       // use WHEN (research documentation) to set up a conditional to determine if a custom or stock badge should be used for README
     },
     {
       type: "input",
-      message: "Excellent! Please provide the URL to your custom badge image.",
       name: "customBadgeURL",
+      message: "Excellent! Please provide the URL to your custom badge image.",
       when: (answers) => {
         return answers.customBadge;
       },
     },
     {
       type: "input",
-      message: "Then please provide a link to a standard badge you'd like to use.",
       name: "badgeLink",
+      message: "Then please provide a link to a standard badge you'd like to use.",
       when: (answers) => answers.customBadge === false
     },
     {
       type: "input",
-      message: "What is the title of your project?",
-      name: "projectName"
+      name: "projectName",
+      message: "What is the title of your project?"
     },
     {
       type: "input",
-      message: "Please give a brief description of your project.",
-      name: "description"
+      name: "description",
+      message: "Please give a brief description of your project."
     },
     {
       type: "input",
-      message: "Please provide a table of contents.",
-      name: "tableOfContents"
+      name: "tableOfContents",
+      message: "Please provide a table of contents."
     },
     {
       type: "input",
-      message: "Please describe the installation method.",
-      name: "installation"
+      name: "installation",
+      message: "Please describe the installation method."
     },
     {
       type: "input",
-      message: "Please provide usage details.",
-      name: "usage"
+      name: "usage",
+      message: "Please provide usage details."
     },
     {
       type: "input",
-      message: "What licenses are associated with your project?",
-      name: "licenses"
+      name: "licenses",
+      message: "What licenses are associated with your project?"
     },
     {
       type: "input",
-      message: "Please list all contributors to your project.",
-      name: "contributors"
+      name: "contributors",
+      message: "Please list all contributors to your project."
     },
     {
       type: "input",
-      message: "What tests are associated with this project?",
-      name: "tests"
+      name: "tests",
+      message: "What tests are associated with this project?"
     },
     {
       type: "input",
-      message: "Please list any answers to frequently asked questions.",
-      name: "freqAskedQuestions"
+      name: "freqAskedQuestions",
+      message: "Please list any answers to frequently asked questions."
     },
     {
       type: "confirm",
-      message: "Would you like to include your GitHub profile picture?",
       name: "profilePic",
+      message: "Would you like to include your GitHub profile picture?",
       default: false
     },
     {
       type: "confirm",
-      message: "Would you like to include your GitHub e-mail address?",
       name: "email",
+      message: "Would you like to include your GitHub e-mail address?",
       default: false
     }
   ]).then(answers => {
