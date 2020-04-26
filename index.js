@@ -7,11 +7,13 @@ const writeFileAsync = util.promisify(fs.writeFile);
 
 const promptUser = () => {
   return inquirer.prompt([
+    // returns USERNAME:
     { 
       type: "input",
       name: "username",
       message: "What is your GitHub user name?"
     },
+    // USER BADGE:
     {
       type: "confirm",
       name: "badgeConfirm",
@@ -36,16 +38,19 @@ const promptUser = () => {
           return !answers.badgeConfirm;
         }
       },
+    // PROJECT NAME:
     {
       type: "input",
       name: "projectName",
       message: "What is the title of your project?"
     },
+    // PROJECT DESCRIPTION:
     {
       type: "input",
       name: "description",
       message: "Please give a brief description of your project."
     },
+    // TABLE OF CONTENTS:
     {
       type: "confirm",
       name: "tableOfContentsConfirm",
@@ -61,16 +66,19 @@ const promptUser = () => {
           return answers.tableOfContentsConfirm;
         }
       },
+    // INSTALLATION:
     {
       type: "input",
       name: "installation",
       message: "Please describe your project's installation method."
     },
+    // USAGE:
     {
       type: "input",
       name: "usage",
       message: "Please provide your project's usage details."
     },
+    // LICENSES:
     {
       type: "confirm",
       name: "licenseConfirm",
@@ -86,11 +94,13 @@ const promptUser = () => {
           return answers.licenseConfirm;
         }
       },
+    // CONTRIBUTORS:
     {
       type: "input",
       name: "contributors",
       message: "Please list all contributors to your project."
     },
+    // TESTS:
     {
     type: "confirm",
     name: "testsConfirm",
@@ -106,17 +116,20 @@ const promptUser = () => {
           return answers.testsConfirm;
         }
       },
+    // FREQUENTLY ASKED QUESTIONS:
     {
       type: "input",
       name: "freqAskedQuestions",
       message: "Please list any answers to frequently asked questions."
     },
+    // GITHUB PROFILE PICTURE:
     {
       type: "confirm",
       name: "profilePicConfirm",
       message: "Would you like to include your GitHub profile picture?",
       default: false
     },
+    // GITHUB E-MAIL ADDRESS:
     {
       type: "confirm",
       name: "emailConfirm",
@@ -127,13 +140,27 @@ const promptUser = () => {
 }
 
 const writeMD = (answers) => {
+  let tableOfContents;
+  let tableOfContentsUL;
+
+  if (!answers.tableOfContentsConfirm) {
+    tableOfContents = "";
+  } else {
+    // formats the answers from TOC prompt into bullet-point unordered list items:
+    tableOfContentsUL = answers.tableOfContents.split("/").map(function(entry) {
+      return `- ${entry.trim()}\n`;
+    });
+    tableOfContentsUL = tableOfContentsUL.join("");
+    // renders unordered list with a section heading:
+    tableOfContents = `## Table of Contents:\n${tableOfContentsUL}`;
+  }
+
   return `# ${answers.projectName}
   
-  ## Description:
-  ${answers.description}
+## Description:
+${answers.description}
   
-  ## Table of Contents:
-  ${answers.tableOfContents}
+${tableOfContents}
   `
 }
 
@@ -148,3 +175,4 @@ promptUser()
   console.log(err);
 });
 // This is a good resource for badge generation: https://shields.io/
+// This is a good resource for READMEs and GIFs: https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46
