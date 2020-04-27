@@ -1,8 +1,6 @@
 const fs = require("fs");
 const inquirer = require("inquirer");
 const util = require("util");
-// I will need to read up on the documentation of Util.js: https://nodejs.org/api/util.html.
-
 const writeFileAsync = util.promisify(fs.writeFile);
 
 const promptUser = () => {
@@ -12,6 +10,19 @@ const promptUser = () => {
       type: "input",
       name: "username",
       message: "What is your GitHub user name?"
+    },
+    // PROJECT NAME:
+    {
+      type: "input",
+      name: "projectName",
+      message: "What is the title of your project?",
+      default: "My Project"
+    },
+    // PROJECT DESCRIPTION:
+    {
+      type: "input",
+      name: "description",
+      message: "Please give a brief description of your project."
     },
     // USER BADGE:
     {
@@ -38,30 +49,18 @@ const promptUser = () => {
           return !answers.badgeConfirm;
         }
       },
-    // PROJECT NAME:
-    {
-      type: "input",
-      name: "projectName",
-      message: "What is the title of your project?"
-    },
-    // PROJECT DESCRIPTION:
-    {
-      type: "input",
-      name: "description",
-      message: "Please give a brief description of your project."
-    },
     // TABLE OF CONTENTS:
     {
       type: "confirm",
       name: "tableOfContentsConfirm",
-      message: "Does your project require a table of contents?",
+      message: "Would you like to include a table of contents?",
       default: false
     },
     // if(tableOfContentsConfirm):
       {
         type: "input",
         name: "tableOfContents",
-        message: "Please list what your table of contents should display, separating each entry with a slash (/).",
+        message: "Great! All the fields you select will be displayed as <links>. If you wish to add any others, just type them now and separate each with a slash (/).",
         when: answers => {
           return answers.tableOfContentsConfirm;
         }
@@ -70,7 +69,8 @@ const promptUser = () => {
     {
       type: "input",
       name: "installation",
-      message: "Please describe your project's installation method."
+      message: "Please describe your project's installation method.",
+      default: "None"
     },
     // USAGE:
     {
@@ -140,28 +140,47 @@ const promptUser = () => {
 }
 
 const writeMD = (answers) => {
-  let tableOfContents;
-  let tableOfContentsUL;
+  // VARIABLES:
+  let description, installation, tableOfContents;
 
+  // https://coderwall.com/p/urxpsa/remove-falsy-values-or-empty-strings-from-javascript-objects
+  // let filteredSelections;
+  // const filter = (answers) => {
+  //   Object.keys(answers).forEach((prop) => {
+  //     if (answers[prop]) { filteredSelections[prop] = answers[prop]; }
+  //   });
+  //   return filteredSelections;
+  // }
+  // filter(answers);
+  // console.log(filteredSelections);
+
+  // CONDITIONALS:
+  // table of contents:
   if (!answers.tableOfContentsConfirm) {
     tableOfContents = "";
   } else {
-    // formats the answers from TOC prompt into bullet-point unordered list items:
-    tableOfContentsUL = answers.tableOfContents.split("/").map(function(entry) {
+    // formats the answers into unordered list items:
+    let tableOfContentsUL = answers.tableOfContents.split("/").map((entry) => {
       return `- ${entry.trim()}\n`;
     });
     tableOfContentsUL = tableOfContentsUL.join("");
-    // renders unordered list with a section heading:
+    // renders the unordered list below a section heading:
     tableOfContents = `## Table of Contents:\n${tableOfContentsUL}`;
   }
+  // description:
+  if (!answers.description) {
+    description = "";
+  } else {
+    description = `## Description:\n>${answers.description}`;
+  }
+  // installation:
+  if (answers.installation === "None") {
+    installation = "";
+  } else {
+    installation = `## Installation:\n${answers.installation}`;
+  }
 
-  return `# ${answers.projectName}
-  
-## Description:
-${answers.description}
-  
-${tableOfContents}
-  `
+  return `# ${answers.projectName}\n\n${description}\n\n${tableOfContents}`;
 }
 
 promptUser()
