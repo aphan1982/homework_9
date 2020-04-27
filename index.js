@@ -61,7 +61,7 @@ const promptUser = () => {
       {
         type: "input",
         name: "tableOfContents",
-        message: "Please list what your table of contents should display.",
+        message: "Please list what your table of contents should display, separating each entry with a slash (/).",
         when: answers => {
           return answers.tableOfContentsConfirm;
         }
