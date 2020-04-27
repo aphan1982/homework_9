@@ -142,45 +142,48 @@ const promptUser = () => {
 const writeMD = (answers) => {
   // VARIABLES:
   let description, installation, tableOfContents;
+  let filteredAnswers = {};
 
-  // https://coderwall.com/p/urxpsa/remove-falsy-values-or-empty-strings-from-javascript-objects
-  // let filteredSelections;
-  // const filter = (answers) => {
-  //   Object.keys(answers).forEach((prop) => {
-  //     if (answers[prop]) { filteredSelections[prop] = answers[prop]; }
-  //   });
-  //   return filteredSelections;
-  // }
-  // filter(answers);
-  // console.log(filteredSelections);
-
+  // filters what results the user would like displayed in readme:
+  const filter = () => {
+    Object.keys(answers).forEach((value) => {
+      if (answers[value]) { filteredAnswers[value] = answers[value]; }
+    });
+    return filteredAnswers;
+  };
+  filter();
+  console.log(filteredAnswers);
+  
   // CONDITIONALS:
   // table of contents:
-  if (!answers.tableOfContentsConfirm) {
+  if (!filteredAnswers.tableOfContentsConfirm) {
     tableOfContents = "";
   } else {
     // formats the answers into unordered list items:
-    let tableOfContentsUL = answers.tableOfContents.split("/").map((entry) => {
-      return `- ${entry.trim()}\n`;
+    let tableOfContentsUL;
+    tableOfContentsUL = filteredAnswers.tableOfContents.split("/").map(function(entry) {
+      // Puts the LI into Markdown-friendly format:
+      let tableOfContentsLink = entry.trim().toLowerCase().replace(/[,?'"!@#$%^&*(){};:.]/g, "").replace(/\s/g, "-");
+      return `- [${entry.trim()}](#${tableOfContentsLink})\n`;
     });
     tableOfContentsUL = tableOfContentsUL.join("");
     // renders the unordered list below a section heading:
     tableOfContents = `## Table of Contents:\n${tableOfContentsUL}`;
   }
   // description:
-  if (!answers.description) {
+  if (!filteredAnswers.description) {
     description = "";
   } else {
-    description = `## Description:\n>${answers.description}`;
+    description = `## Description:\n>${filteredAnswers.description}`;
   }
   // installation:
-  if (answers.installation === "None") {
+  if (filteredAnswers.installation === "None") {
     installation = "";
   } else {
-    installation = `## Installation:\n${answers.installation}`;
+    installation = `## Installation:\n${filteredAnswers.installation}`;
   }
-
-  return `# ${answers.projectName}\n\n${description}\n\n${tableOfContents}`;
+  
+  return `# ${filteredAnswers.projectName}\n\n${description}\n\n${tableOfContents}`;
 }
 
 promptUser()
