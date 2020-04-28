@@ -28,26 +28,34 @@ const promptUser = () => {
     {
       type: "confirm",
       name: "badgeConfirm",
-      message: "Do you have a custom graphic you'd like to upload for your badge?",
-      default: false
+      message: "Would you like to build a badge?",
+      default: true
     },
-    // if(badgeConfirm):
+    // if(badgeConfirm), for badge label:
       {
         type: "input",
-        name: "customBadgeURL",
-        message: "Excellent! Please provide the URL to your custom badge image.",
+        name: "customBadgeLabel",
+        message: "Excellent! What label do you want to give it?",
         when: answers => {
           return answers.badgeConfirm;
         },
       },
-      // else:
+      // for badge message:
       {
         type: "input",
-        name: "standardBadgeURL",
-        message: "Then please provide a link to a standard badge you'd like to use.",
+        name: "customBadgeMsg",
+        message: "Perfect. Now what will your badge message be?",
         when: answers => {
-          return !answers.badgeConfirm;
+          return answers.customBadgeLabel;
         }
+      },
+      // for badge color:
+      {
+        type: "checkbox",
+        name: "customBadgeColor",
+        message: "Last step: what color would you like your badge?",
+        // This function currently does not work: trying to get answers.customBadgeColor only results in an empty array, undefined. I cannot find any documentation to help figure this out right now.
+        choices: ["bright green", "bright green", "green", "yellow green", "yellow", "orange", "red", "light grey", "blue"] 
       },
     // TABLE OF CONTENTS:
     {
@@ -141,7 +149,7 @@ const promptUser = () => {
 
 const writeMD = (answers) => {
   // VARIABLES:
-  let description, contributors, customTOCUL, customSection, freqAskedQuestions, installation, licenses, tableOfContents, tests, usage;
+  let customBadge, description, contributors, customTOCUL, customSection, freqAskedQuestions, installation, licenses, tableOfContents, tests, usage;
   let filteredAnswers = {};
 
   // filters what results the user would like displayed in readme:
@@ -153,8 +161,19 @@ const writeMD = (answers) => {
   };
   filter();
   console.log(filteredAnswers);
-  console.log(answers.description);
-  
+  console.log(answers.customBadgeColor.choices);
+
+  // BADGE:
+  // (This section is meant to create a URL using img.shields.io–still working on getting Inquirer.js to give useable data)
+  // if (!answers.badgeConfirm) {
+  //   customBadge = "";
+  // } else {
+  //   const badgeColors = ["brightgreen", "green", "yellowgreen", "yellow", "orange", "red", "lightgrey", "blue"]
+  //   let customBadgeLabel = answers.customBadgeLabel.replace(/\s/g, "%20");
+  //   let customBadgeMsg = answers.customBadgeMsg.replace(/\s/g, "%20");
+    
+  //   customBadge = `https://img.shields.io/${answers.customBadgeLabel} `
+  // }
   // TABLE OF CONTENTS (in the order that they appear via Inquirer.js prompt):
   if (!filteredAnswers.tableOfContentsConfirm) {
     tableOfContents = "";
@@ -240,7 +259,7 @@ const writeMD = (answers) => {
   if (!filteredAnswers.freqAskedQuestions === "None") {
     freqAskedQuestions = "";
   } else {
-    freqAskedQuestions = `## Frequestly Asked Questions:\n${answers.freqAskedQuestions}\n\n`;
+    freqAskedQuestions = `## Frequently Asked Questions:\n${answers.freqAskedQuestions}\n\n`;
   }
   if (!filteredAnswers.customTOCUL) {
     customSection = "";
