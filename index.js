@@ -141,7 +141,7 @@ const promptUser = () => {
 
 const writeMD = (answers) => {
   // VARIABLES:
-  let description, contributors, customTOCUL, freqAskedQuestions, installation, licenses, tableOfContents, tests, usage;
+  let description, contributors, customTOCUL, customSection, freqAskedQuestions, installation, licenses, tableOfContents, tests, usage;
   let filteredAnswers = {};
 
   // filters what results the user would like displayed in readme:
@@ -153,8 +153,9 @@ const writeMD = (answers) => {
   };
   filter();
   console.log(filteredAnswers);
+  console.log(answers.description);
   
-  // TABLE OF CONTENTS:
+  // TABLE OF CONTENTS (in the order that they appear via Inquirer.js prompt):
   if (!filteredAnswers.tableOfContentsConfirm) {
     tableOfContents = "";
   } else {
@@ -201,24 +202,57 @@ const writeMD = (answers) => {
       customTOCUL = customTOCUL.join("");
     }
     // renders the unordered list below a section heading:
-    tableOfContents = `## Table of Contents:\n${installation}${usage}${licenses}${contributors}${tests}${freqAskedQuestions}${customTOCUL}`;
+    tableOfContents = `## Table of Contents:\n${installation}${usage}${licenses}${contributors}${tests}${freqAskedQuestions}${customTOCUL}\n`;
   }
 
-  // SECTIONS:
-  // description:
+  // SECTIONS (in the order that they appear via Inquirer.js prompt):
+  // verifies that the user has opted to have this section displayed. If so, formats it:
   if (!filteredAnswers.description) {
     description = "";
   } else {
-    description = `## Description:\n>${filteredAnswers.description}\n`;
+    description = `## Description:\n>${filteredAnswers.description}\n\n`;
   }
-  // installation:
   if (!filteredAnswers.installation) {
     installation = "";
   } else {
-    installation = `## Installation:\n${filteredAnswers.installation}`;
+    installation = `## Installation:\n${answers.installation}\n\n`;
+  }
+  if (!filteredAnswers.usage) {
+    usage = "";
+  } else {
+    usage = `## Usage:\n${answers.usage}\n\n`;
+  }
+  if (!filteredAnswers.licenses) {
+    licenses = "";
+  } else {
+    licenses = `## Licenses:\n${answers.licenses}\n\n`;
+  }
+  if (!filteredAnswers.contributors) {
+    contributors = "";
+  } else {
+    contributors = `## Contributors:\n${answers.contributors}\n\n`;
+  }
+  if (!filteredAnswers.tests) {
+    tests = "";
+  } else {
+    tests = `## Tests:\n${answers.tests}\n\n`;
+  }
+  if (!filteredAnswers.freqAskedQuestions === "None") {
+    freqAskedQuestions = "";
+  } else {
+    freqAskedQuestions = `## Frequestly Asked Questions:\n${answers.freqAskedQuestions}\n\n`;
+  }
+  if (!filteredAnswers.customTOCUL) {
+    customSection = "";
+  } else {
+    customSection = answers.customTOCUL.split("/").map(function(entry) {
+      return `## ${entry.trim()}\n*Your text here*\n\n`;
+    });
+    customSection = customSection.join("");
   }
   
-  return `# ${filteredAnswers.projectName}\n\n${description}\n\n${tableOfContents}`;
+  // puts every selected item in list order to become Markdown document:
+  return `# ${filteredAnswers.projectName}\n\n${description}${tableOfContents}${installation}${usage}${licenses}${contributors}${tests}${freqAskedQuestions}${customSection}`;
 }
 
 promptUser()
