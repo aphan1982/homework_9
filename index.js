@@ -59,8 +59,8 @@ const promptUser = () => {
     // if(tableOfContentsConfirm):
       {
         type: "input",
-        name: "tableOfContents",
-        message: "Great! All the fields you select will be displayed as <links>. If you wish to add any others, just type them now and separate each with a slash (/).",
+        name: "customTOCUL",
+        message: "Great! All the fields you select will be displayed as <links>. If you wish to append any custom fields, enter them now, separating each with a slash (/).",
         when: answers => {
           return answers.tableOfContentsConfirm;
         }
@@ -69,8 +69,7 @@ const promptUser = () => {
     {
       type: "input",
       name: "installation",
-      message: "Please describe your project's installation method.",
-      default: "None"
+      message: "Please describe your project's installation method."
     },
     // USAGE:
     {
@@ -120,7 +119,8 @@ const promptUser = () => {
     {
       type: "input",
       name: "freqAskedQuestions",
-      message: "Please list any answers to frequently asked questions."
+      message: "Please list any answers to frequently asked questions.",
+      default: "None"
     },
     // GITHUB PROFILE PICTURE:
     {
@@ -141,7 +141,7 @@ const promptUser = () => {
 
 const writeMD = (answers) => {
   // VARIABLES:
-  let description, installation, tableOfContents;
+  let description, contributors, customTOCUL, freqAskedQuestions, installation, licenses, tableOfContents, tests, usage;
   let filteredAnswers = {};
 
   // filters what results the user would like displayed in readme:
@@ -154,30 +154,65 @@ const writeMD = (answers) => {
   filter();
   console.log(filteredAnswers);
   
-  // CONDITIONALS:
-  // table of contents:
+  // TABLE OF CONTENTS:
   if (!filteredAnswers.tableOfContentsConfirm) {
     tableOfContents = "";
   } else {
-    // formats the answers into unordered list items:
-    let tableOfContentsUL;
-    tableOfContentsUL = filteredAnswers.tableOfContents.split("/").map(function(entry) {
-      // Puts the LI into Markdown-friendly format:
-      let tableOfContentsLink = entry.trim().toLowerCase().replace(/[,?'"!@#$%^&*(){};:.]/g, "").replace(/\s/g, "-");
-      return `- [${entry.trim()}](#${tableOfContentsLink})\n`;
-    });
-    tableOfContentsUL = tableOfContentsUL.join("");
+    // exctracts all the selected standard README fields and formats them as linked list items:
+    if (!filteredAnswers.installation) {
+      installation = "";
+    } else {
+      installation = `- [Installation](#installation)\n`;
+    }
+    if (!filteredAnswers.usage) {
+      usage = "";
+    } else {
+      usage = `- [Usage](#usage)\n`;
+    }
+    if (!filteredAnswers.licenses) {
+      licenses = "";
+    } else {
+      licenses = `- [Licenses](#licenses)\n`;
+    }
+    if (!filteredAnswers.contributors) {
+      contributors = "";
+    } else {
+      contributors = `- [Contributors](#contributors)\n`;
+    }
+    if (!filteredAnswers.tests) {
+      tests = "";
+    } else {
+      tests = `- [Tests](#tests)\n`;
+    }
+    if (filteredAnswers.freqAskedQuestions === "None" || false) {
+      freqAskedQuestions = "";
+    } else {
+      freqAskedQuestions = `- [Frequently asked questions](#freqAskedQuestions)\n`;
+    }
+    if (!filteredAnswers.customTOCUL) {
+      customTOCUL = "";
+    } else {
+      // formats the custom user table of content entries into unordered list items:
+      customTOCUL = filteredAnswers.customTOCUL.split("/").map(function(entry) {
+        // Puts those into Markdown-friendly format:
+        let customTOCULLink = entry.trim().toLowerCase().replace(/[.,?'"!@#$%^&*(){};:]/g, "").replace(/\s/g, "-");
+        return `- [${entry.trim()}](#${customTOCULLink})\n`;
+      });
+      customTOCUL = customTOCUL.join("");
+    }
     // renders the unordered list below a section heading:
-    tableOfContents = `## Table of Contents:\n${tableOfContentsUL}`;
+    tableOfContents = `## Table of Contents:\n${installation}${usage}${licenses}${contributors}${tests}${freqAskedQuestions}${customTOCUL}`;
   }
+
+  // SECTIONS:
   // description:
   if (!filteredAnswers.description) {
     description = "";
   } else {
-    description = `## Description:\n>${filteredAnswers.description}`;
+    description = `## Description:\n>${filteredAnswers.description}\n`;
   }
   // installation:
-  if (filteredAnswers.installation === "None") {
+  if (!filteredAnswers.installation) {
     installation = "";
   } else {
     installation = `## Installation:\n${filteredAnswers.installation}`;
